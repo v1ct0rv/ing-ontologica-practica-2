@@ -1,0 +1,61 @@
+# =============================================================================
+# 5 CASOS DE INFERENCIA
+# Documentar el resultado CON y SIN inferencia habilitada en GraphDB
+# =============================================================================
+
+# Caso 1: Inferencia por subClassOf
+# PersonaJuridica subClassOf Deudor -> las instancias de PersonaJuridica
+# tambien deben aparecer como instancias de Deudor con inferencia habilitada
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?deudor ?nombre WHERE {
+    ?deudor a ins:Deudor .
+    OPTIONAL { ?deudor ins:nombreRazonSocial ?nombre }
+}
+# SIN inferencia: 0 resultados (nadie esta tipado directamente como ins:Deudor)
+# CON inferencia: 8 resultados (PersonaJuridica + PersonaNatural heredan Deudor)
+
+# ---
+
+# Caso 2: Inferencia por owl:inverseOf (tieneAcreedor / esAcreedorDe)
+# Solo se declaran triples con tieneAcreedor, pero esAcreedorDe debe inferirse
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?acreedor ?deudor WHERE {
+    ?acreedor ins:esAcreedorDe ?deudor .
+}
+# SIN inferencia: 0 resultados (no hay triples explicitos con esAcreedorDe)
+# CON inferencia: 6 resultados (inferidos desde tieneAcreedor)
+
+# ---
+
+# Caso 3: Inferencia por owl:inverseOf (iniciaEn / esIniciadoPor)
+# Solo se declaran triples con iniciaEn, pero esIniciadoPor debe inferirse
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?proc ?deudor WHERE {
+    ?proc ins:esIniciadoPor ?deudor .
+}
+# SIN inferencia: 0 resultados
+# CON inferencia: 3 resultados (EmpresaABC->ReorgEj1, EmpresaXYZ->LiquidEj1, JuanPerez->ReorgEj2)
+
+# ---
+
+# Caso 4: Inferencia por rdfs:subPropertyOf
+# tieneAcreedorPrivilegiado subPropertyOf tieneAcreedor
+# Los triples con tieneAcreedorPrivilegiado deben inferir triples con tieneAcreedor
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?deudor ?acreedor WHERE {
+    ?deudor ins:tieneAcreedor ?acreedor .
+}
+# SIN inferencia: 6 resultados (solo los explicitos)
+# CON inferencia: 8 resultados (incluye los inferidos desde tieneAcreedorPrivilegiado)
+
+# ---
+
+# Caso 5: Inferencia por owl:equivalentClass con owl:unionOf
+# Deudor equivalentClass (PersonaJuridica UNION PersonaNatural)
+# Cualquier PersonaJuridica o PersonaNatural debe ser inferida como Deudor
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?x WHERE {
+    ?x a ins:Deudor .
+}
+# SIN inferencia: 0 resultados (nadie tipado explicitamente como Deudor)
+# CON inferencia: 8 resultados (4 PersonaJuridica + 4 PersonaNatural)

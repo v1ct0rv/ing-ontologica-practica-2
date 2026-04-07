@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Environment variables (contiene API keys)
+.env
+
+# ChromaDB vector store (se regenera con --ingest)
+.chroma_db/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# ZIP de entrega
+practica2-equipo-08.zip
+practica2-equipo-08/
+
+# Enunciado de la práctica (no es entregable)
+Practica2.pdf
+Practica2.md
+
+# Claude Code agent configs
+agents/
+PROMPTS.md
+
+# PDF generado (se regenera con scripts/generate_pdf.sh)
+report/technical_report.pdf

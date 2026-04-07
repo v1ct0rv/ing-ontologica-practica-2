@@ -1,0 +1,41 @@
+# =============================================================================
+# SELECT con FILTER
+# =============================================================================
+
+# Query 4: Procedimientos admitidos despues de una fecha dada
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?proc ?fecha
+WHERE {
+    ?proc a ?tipo .
+    ?tipo rdfs:subClassOf ins:ProcedimientoInsolvencia .
+    ?proc ins:fechaAdmision ?fecha .
+    FILTER (?fecha > "2023-01-01"^^xsd:date)
+}
+ORDER BY ?fecha
+
+# ---
+
+# Query 5: Normas cuyo numero contiene "1116"
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?norma ?numero
+WHERE {
+    ?norma a ?tipo .
+    ?tipo rdfs:subClassOf ins:NormaLegal .
+    ?norma ins:numeroNorma ?numero .
+    FILTER (CONTAINS(?numero, "1116"))
+}
+
+# ---
+
+# Query 6: Acreedores cuyo nombre contiene "Banco" (case-insensitive)
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+SELECT ?acreedor ?nombre
+WHERE {
+    ?acreedor a ?tipo .
+    ?tipo rdfs:subClassOf ins:Acreedor .
+    ?acreedor ins:nombreRazonSocial ?nombre .
+    FILTER (CONTAINS(LCASE(?nombre), "banco"))
+}
+ORDER BY ?nombre
+LIMIT 10

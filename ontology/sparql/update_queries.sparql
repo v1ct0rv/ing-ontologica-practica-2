@@ -1,0 +1,29 @@
+# =============================================================================
+# SPARQL UPDATE (al menos 2 operandos: INSERT DATA y DELETE DATA)
+# =============================================================================
+
+# Update 1: Agregar un nuevo procedimiento de reorganizacion
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+INSERT DATA {
+    ins:ReorgEjemplo3 a ins:Reorganizacion ;
+        ins:fechaAdmision "2025-06-01"^^xsd:date ;
+        ins:estaReguladoPor ins:Ley1116_2006 ;
+        ins:esSupervisadoPor ins:SuperintendenciaSociedades .
+}
+
+# ---
+
+# Update 2: Vincular un deudor al nuevo procedimiento
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+INSERT DATA {
+    ins:MariaLopez ins:iniciaEn ins:ReorgEjemplo3 .
+}
+
+# ---
+
+# Update 3: Eliminar un individuo provisional
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+DELETE DATA {
+    ins:LiquidEjemplo2 ins:estaReguladoPor ins:Decreto772_2020 .
+}

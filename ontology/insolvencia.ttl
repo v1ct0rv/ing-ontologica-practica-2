@@ -1,0 +1,518 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix ins:  <http://www.unal.edu.co/ontologies/insolvencia#> .
+
+###############################################################################
+# Ontology declaration
+###############################################################################
+<http://www.unal.edu.co/ontologies/insolvencia>
+    a owl:Ontology ;
+    rdfs:label "Ontologia de Insolvencia Empresarial Colombia"@es ;
+    rdfs:comment "Ontologia OWL que modela los conceptos del regimen de insolvencia empresarial colombiano, incluyendo Ley 1116 de 2006, Decreto 806 de 2020 y normas relacionadas."@es ;
+    owl:versionInfo "1.0" .
+
+###############################################################################
+# Classes (16 clases, supera el minimo de 10)
+###############################################################################
+ins:EntidadJuridica   a owl:Class ;
+    rdfs:label "Entidad Juridica"@es ;
+    rdfs:comment "Clase base para personas y organizaciones involucradas en procesos de insolvencia."@es .
+
+ins:Deudor            a owl:Class ;
+    rdfs:subClassOf ins:EntidadJuridica ;
+    rdfs:label "Deudor"@es ;
+    rdfs:comment "Persona natural o juridica que se encuentra en estado de insolvencia o cesacion de pagos."@es .
+
+ins:PersonaJuridica   a owl:Class ;
+    rdfs:subClassOf ins:Deudor ;
+    rdfs:label "Persona Juridica"@es ;
+    rdfs:comment "Empresa o sociedad comercial con personeria juridica."@es .
+
+ins:PersonaNatural    a owl:Class ;
+    rdfs:subClassOf ins:Deudor ;
+    rdfs:label "Persona Natural"@es ;
+    rdfs:comment "Individuo natural que actua como comerciante."@es .
+
+ins:Acreedor          a owl:Class ;
+    rdfs:subClassOf ins:EntidadJuridica ;
+    rdfs:label "Acreedor"@es ;
+    rdfs:comment "Persona o entidad a quien se le debe una obligacion."@es .
+
+ins:AcreedorPrivilegiado a owl:Class ;
+    rdfs:subClassOf ins:Acreedor ;
+    rdfs:label "Acreedor Privilegiado"@es ;
+    rdfs:comment "Acreedor con prelacion legal en el pago de sus creditos (ej. entidades financieras, trabajadores)."@es .
+
+ins:AcreedorOrdinario    a owl:Class ;
+    rdfs:subClassOf ins:Acreedor ;
+    rdfs:label "Acreedor Ordinario"@es ;
+    rdfs:comment "Acreedor sin privilegio especial en el orden de pago."@es .
+
+ins:Liquidador        a owl:Class ;
+    rdfs:subClassOf ins:EntidadJuridica ;
+    rdfs:label "Liquidador"@es ;
+    rdfs:comment "Persona designada para administrar y liquidar los bienes del deudor."@es .
+
+ins:ProcedimientoInsolvencia a owl:Class ;
+    rdfs:label "Procedimiento de Insolvencia"@es ;
+    rdfs:comment "Proceso legal mediante el cual se tramita la insolvencia de un deudor."@es .
+
+ins:Reorganizacion    a owl:Class ;
+    rdfs:subClassOf ins:ProcedimientoInsolvencia ;
+    rdfs:label "Reorganizacion"@es ;
+    rdfs:comment "Proceso de reorganizacion empresarial regulado por el Titulo II de la Ley 1116 de 2006."@es .
+
+ins:Liquidacion       a owl:Class ;
+    rdfs:subClassOf ins:ProcedimientoInsolvencia ;
+    rdfs:label "Liquidacion Judicial"@es ;
+    rdfs:comment "Proceso de liquidacion judicial regulado por el Titulo III de la Ley 1116 de 2006."@es .
+
+ins:ActoJuridico      a owl:Class ;
+    rdfs:label "Acto Juridico"@es ;
+    rdfs:comment "Acto procesal emitido en el marco de un procedimiento de insolvencia."@es .
+
+ins:AutoAdmision      a owl:Class ;
+    rdfs:subClassOf ins:ActoJuridico ;
+    rdfs:label "Auto de Admision"@es ;
+    rdfs:comment "Resolucion judicial que admite al deudor al proceso de insolvencia."@es .
+
+ins:AcuerdoReorganizacion a owl:Class ;
+    rdfs:subClassOf ins:ActoJuridico ;
+    rdfs:label "Acuerdo de Reorganizacion"@es ;
+    rdfs:comment "Acuerdo celebrado entre el deudor y sus acreedores para reestructurar las obligaciones."@es .
+
+ins:Obligacion        a owl:Class ;
+    rdfs:label "Obligacion"@es ;
+    rdfs:comment "Deuda u obligacion financiera del deudor frente a un acreedor."@es .
+
+ins:Garantia          a owl:Class ;
+    rdfs:label "Garantia"@es ;
+    rdfs:comment "Bien o derecho que respalda el cumplimiento de una obligacion."@es .
+
+ins:OrganoDecisorio   a owl:Class ;
+    rdfs:label "Organo Decisorio"@es ;
+    rdfs:comment "Entidad con facultad para tomar decisiones en el proceso de insolvencia."@es .
+
+ins:JuntaAcreedores   a owl:Class ;
+    rdfs:subClassOf ins:OrganoDecisorio ;
+    rdfs:label "Junta de Acreedores"@es ;
+    rdfs:comment "Organo colegiado conformado por los acreedores reconocidos en el proceso."@es .
+
+ins:Superintendencia  a owl:Class ;
+    rdfs:subClassOf ins:OrganoDecisorio ;
+    rdfs:label "Superintendencia"@es ;
+    rdfs:comment "Entidad estatal que ejerce funciones jurisdiccionales en procesos de insolvencia."@es .
+
+ins:NormaLegal        a owl:Class ;
+    rdfs:label "Norma Legal"@es ;
+    rdfs:comment "Disposicion normativa aplicable al regimen de insolvencia."@es .
+
+ins:Ley               a owl:Class ;
+    rdfs:subClassOf ins:NormaLegal ;
+    rdfs:label "Ley"@es .
+
+ins:Decreto           a owl:Class ;
+    rdfs:subClassOf ins:NormaLegal ;
+    rdfs:label "Decreto"@es .
+
+###############################################################################
+# DisjointClasses (>= 2 pares)
+###############################################################################
+# Disjoint 1: Un procedimiento es Reorganizacion O Liquidacion, nunca ambos
+[ a owl:AllDisjointClasses ;
+  owl:members ( ins:Reorganizacion ins:Liquidacion ) ] .
+
+# Disjoint 2: Un acreedor es Privilegiado O Ordinario, nunca ambos
+[ a owl:AllDisjointClasses ;
+  owl:members ( ins:AcreedorPrivilegiado ins:AcreedorOrdinario ) ] .
+
+###############################################################################
+# Constructor logico: owl:unionOf
+# Un Deudor es equivalente a PersonaJuridica O PersonaNatural
+###############################################################################
+ins:Deudor owl:equivalentClass [
+    a owl:Class ;
+    owl:unionOf ( ins:PersonaJuridica ins:PersonaNatural )
+] .
+
+###############################################################################
+# Object Properties (12 propiedades objeto)
+###############################################################################
+
+# --- Relacion Deudor-Acreedor ---
+ins:tieneAcreedor a owl:ObjectProperty ;
+    rdfs:domain ins:Deudor ;
+    rdfs:range  ins:Acreedor ;
+    rdfs:label  "tiene acreedor"@es ;
+    rdfs:comment "Relaciona un deudor con sus acreedores."@es .
+
+ins:esAcreedorDe a owl:ObjectProperty ;
+    owl:inverseOf ins:tieneAcreedor ;          # inverseOf (1)
+    rdfs:domain ins:Acreedor ;
+    rdfs:range  ins:Deudor ;
+    rdfs:label  "es acreedor de"@es .
+
+# --- Relacion Deudor-Procedimiento ---
+ins:iniciaEn a owl:ObjectProperty ;
+    rdfs:domain ins:Deudor ;
+    rdfs:range  ins:ProcedimientoInsolvencia ;
+    rdfs:label  "inicia en"@es ;
+    rdfs:comment "Indica que un deudor inicia un procedimiento de insolvencia."@es .
+
+ins:esIniciadoPor a owl:ObjectProperty ;
+    owl:inverseOf ins:iniciaEn ;               # inverseOf (2)
+    rdfs:domain ins:ProcedimientoInsolvencia ;
+    rdfs:range  ins:Deudor ;
+    rdfs:label  "es iniciado por"@es .
+
+# --- Relacion Procedimiento-Regulacion ---
+ins:estaReguladoPor a owl:ObjectProperty ;
+    rdfs:domain ins:ProcedimientoInsolvencia ;
+    rdfs:range  ins:NormaLegal ;
+    rdfs:label  "esta regulado por"@es ;
+    rdfs:comment "Indica la norma legal que regula un procedimiento."@es .
+
+# --- Relacion Procedimiento-Supervision ---
+ins:esSupervisadoPor a owl:ObjectProperty ;
+    rdfs:subPropertyOf ins:estaReguladoPor ;   # subPropertyOf (2): supervision es una forma de regulacion
+    rdfs:domain ins:ProcedimientoInsolvencia ;
+    rdfs:range  ins:OrganoDecisorio ;
+    rdfs:label  "es supervisado por"@es ;
+    rdfs:comment "Indica el organo que supervisa un procedimiento de insolvencia."@es .
+
+# --- Relacion OrganoDecisorio-ActoJuridico ---
+ins:emite a owl:ObjectProperty ;
+    rdfs:domain ins:OrganoDecisorio ;
+    rdfs:range  ins:ActoJuridico ;
+    rdfs:label  "emite"@es ;
+    rdfs:comment "Indica que un organo decisorio emite un acto juridico."@es .
+
+# --- Relacion Obligacion-Garantia ---
+ins:tieneGarantia a owl:ObjectProperty ;
+    rdfs:domain ins:Obligacion ;
+    rdfs:range  ins:Garantia ;
+    rdfs:label  "tiene garantia"@es ;
+    rdfs:comment "Indica que una obligacion esta respaldada por una garantia."@es .
+
+# --- Relacion Acreedor-Junta ---
+ins:participaEn a owl:ObjectProperty ;
+    rdfs:domain ins:Acreedor ;
+    rdfs:range  ins:JuntaAcreedores ;
+    rdfs:label  "participa en"@es ;
+    rdfs:comment "Indica que un acreedor participa en una junta de acreedores."@es .
+
+# --- Relacion Deudor-Obligacion ---
+ins:tieneObligacion a owl:ObjectProperty ;
+    rdfs:domain ins:Deudor ;
+    rdfs:range  ins:Obligacion ;
+    rdfs:label  "tiene obligacion"@es ;
+    rdfs:comment "Relaciona un deudor con sus obligaciones financieras."@es .
+
+# --- Relacion OrganoDecisorio-Liquidador ---
+ins:designaLiquidador a owl:ObjectProperty ;
+    rdfs:domain ins:OrganoDecisorio ;
+    rdfs:range  ins:Liquidador ;
+    rdfs:label  "designa liquidador"@es ;
+    rdfs:comment "Indica que un organo decisorio designa a un liquidador."@es .
+
+# --- subPropertyOf (1): acreedor privilegiado es un tipo de acreedor ---
+ins:tieneAcreedorPrivilegiado a owl:ObjectProperty ;
+    rdfs:subPropertyOf ins:tieneAcreedor ;     # subPropertyOf (1)
+    rdfs:domain ins:Deudor ;
+    rdfs:range  ins:AcreedorPrivilegiado ;
+    rdfs:label  "tiene acreedor privilegiado"@es .
+
+###############################################################################
+# Datatype Properties (6 propiedades de datos)
+###############################################################################
+ins:nombreRazonSocial a owl:DatatypeProperty ;
+    rdfs:domain ins:EntidadJuridica ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "nombre o razon social"@es .
+
+ins:nit a owl:DatatypeProperty ;
+    rdfs:domain ins:PersonaJuridica ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "NIT"@es ;
+    rdfs:comment "Numero de Identificacion Tributaria."@es .
+
+ins:fechaAdmision a owl:DatatypeProperty ;
+    rdfs:domain ins:ProcedimientoInsolvencia ;
+    rdfs:range  xsd:date ;
+    rdfs:label  "fecha de admision"@es .
+
+ins:montoObligacion a owl:DatatypeProperty ;
+    rdfs:domain ins:Obligacion ;
+    rdfs:range  xsd:decimal ;
+    rdfs:label  "monto de la obligacion"@es .
+
+ins:numeroNorma a owl:DatatypeProperty ;
+    rdfs:domain ins:NormaLegal ;
+    rdfs:range  xsd:string ;
+    rdfs:label  "numero de la norma"@es .
+
+ins:anoExpedicion a owl:DatatypeProperty ;
+    rdfs:domain ins:NormaLegal ;
+    rdfs:range  xsd:gYear ;
+    rdfs:label  "ano de expedicion"@es .
+
+###############################################################################
+# Property Restrictions
+###############################################################################
+
+# allValuesFrom: todos los acreedores de un Deudor deben ser instancias de Acreedor
+ins:Deudor rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ins:tieneAcreedor ;
+    owl:allValuesFrom ins:Acreedor
+] .
+
+# someValuesFrom: todo Procedimiento de Insolvencia tiene al menos un organo que lo supervisa
+ins:ProcedimientoInsolvencia rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ins:esSupervisadoPor ;
+    owl:someValuesFrom ins:OrganoDecisorio
+] .
+
+# Cardinality: un Acuerdo de Reorganizacion tiene exactamente 1 Deudor que lo inicia
+ins:AcuerdoReorganizacion rdfs:subClassOf [
+    a owl:Restriction ;
+    owl:onProperty ins:esIniciadoPor ;
+    owl:cardinality "1"^^xsd:nonNegativeInteger
+] .
+
+###############################################################################
+# Named Individuals
+###############################################################################
+
+# ============================================================================
+# NormaLegal (5 individuos)
+# ============================================================================
+ins:Ley1116_2006 a ins:Ley ;
+    ins:numeroNorma "1116" ;
+    ins:anoExpedicion "2006"^^xsd:gYear ;
+    rdfs:label "Ley 1116 de 2006"@es ;
+    rdfs:comment "Regimen de Insolvencia Empresarial de Colombia."@es .
+
+ins:Decreto806_2020 a ins:Decreto ;
+    ins:numeroNorma "806" ;
+    ins:anoExpedicion "2020"^^xsd:gYear ;
+    rdfs:label "Decreto 806 de 2020"@es ;
+    rdfs:comment "Medidas para implementar las TIC en las actuaciones judiciales."@es .
+
+ins:Decreto772_2020 a ins:Decreto ;
+    ins:numeroNorma "772" ;
+    ins:anoExpedicion "2020"^^xsd:gYear ;
+    rdfs:label "Decreto 772 de 2020"@es ;
+    rdfs:comment "Medidas transitorias en materia de insolvencia."@es .
+
+ins:Ley2445_2025 a ins:Ley ;
+    ins:numeroNorma "2445" ;
+    ins:anoExpedicion "2025"^^xsd:gYear ;
+    rdfs:label "Ley 2445 de 2025"@es .
+
+ins:Ley1564_2012 a ins:Ley ;
+    ins:numeroNorma "1564" ;
+    ins:anoExpedicion "2012"^^xsd:gYear ;
+    rdfs:label "Codigo General del Proceso"@es .
+
+# ============================================================================
+# OrganoDecisorio (4 individuos)
+# ============================================================================
+ins:SuperintendenciaSociedades a ins:Superintendencia ;
+    ins:nombreRazonSocial "Superintendencia de Sociedades"^^xsd:string ;
+    rdfs:label "Superintendencia de Sociedades"@es .
+
+ins:SuperintendenciaFinanciera a ins:Superintendencia ;
+    ins:nombreRazonSocial "Superintendencia Financiera de Colombia"^^xsd:string ;
+    rdfs:label "Superintendencia Financiera"@es .
+
+ins:JuntaAcreedores_ReorgEjemplo1 a ins:JuntaAcreedores ;
+    rdfs:label "Junta de Acreedores - Reorganizacion Ejemplo 1"@es .
+
+ins:JuntaAcreedores_LiquidEjemplo1 a ins:JuntaAcreedores ;
+    rdfs:label "Junta de Acreedores - Liquidacion Ejemplo 1"@es .
+
+# ============================================================================
+# ProcedimientoInsolvencia (4 individuos)
+# ============================================================================
+ins:ReorgEjemplo1 a ins:Reorganizacion ;
+    ins:fechaAdmision "2023-03-15"^^xsd:date ;
+    ins:estaReguladoPor ins:Ley1116_2006 ;
+    ins:esSupervisadoPor ins:SuperintendenciaSociedades ;
+    rdfs:label "Reorganizacion Ejemplo 1 - Empresa ABC"@es .
+
+ins:LiquidEjemplo1 a ins:Liquidacion ;
+    ins:fechaAdmision "2022-07-01"^^xsd:date ;
+    ins:estaReguladoPor ins:Ley1116_2006 ;
+    ins:esSupervisadoPor ins:SuperintendenciaSociedades ;
+    rdfs:label "Liquidacion Ejemplo 1 - Empresa XYZ"@es .
+
+ins:ReorgEjemplo2 a ins:Reorganizacion ;
+    ins:fechaAdmision "2024-01-10"^^xsd:date ;
+    ins:estaReguladoPor ins:Decreto806_2020 ;
+    ins:esSupervisadoPor ins:SuperintendenciaSociedades ;
+    rdfs:label "Reorganizacion Ejemplo 2 - Juan Perez"@es .
+
+ins:LiquidEjemplo2 a ins:Liquidacion ;
+    ins:fechaAdmision "2024-06-20"^^xsd:date ;
+    ins:estaReguladoPor ins:Decreto772_2020 ;
+    ins:esSupervisadoPor ins:SuperintendenciaSociedades ;
+    rdfs:label "Liquidacion Ejemplo 2"@es .
+
+# ============================================================================
+# Deudor: PersonaJuridica (4) + PersonaNatural (4) = 8 individuos
+# ============================================================================
+ins:EmpresaABC a ins:PersonaJuridica ;
+    ins:nombreRazonSocial "Empresa ABC S.A.S."^^xsd:string ;
+    ins:nit "900123456-1"^^xsd:string ;
+    ins:iniciaEn ins:ReorgEjemplo1 ;
+    ins:tieneObligacion ins:Obligacion_ABC_Banco ;
+    ins:tieneObligacion ins:Obligacion_ABC_Proveedor ;
+    rdfs:label "Empresa ABC S.A.S."@es .
+
+ins:EmpresaXYZ a ins:PersonaJuridica ;
+    ins:nombreRazonSocial "Corporacion XYZ Ltda."^^xsd:string ;
+    ins:nit "800987654-2"^^xsd:string ;
+    ins:iniciaEn ins:LiquidEjemplo1 ;
+    ins:tieneObligacion ins:Obligacion_XYZ_Banco ;
+    ins:tieneObligacion ins:Obligacion_XYZ_Proveedor ;
+    rdfs:label "Corporacion XYZ Ltda."@es .
+
+ins:EmpresaDEF a ins:PersonaJuridica ;
+    ins:nombreRazonSocial "Industrias DEF S.A."^^xsd:string ;
+    ins:nit "901234567-3"^^xsd:string ;
+    rdfs:label "Industrias DEF S.A."@es .
+
+ins:EmpresaGHI a ins:PersonaJuridica ;
+    ins:nombreRazonSocial "Comercializadora GHI S.A.S."^^xsd:string ;
+    ins:nit "902345678-4"^^xsd:string ;
+    rdfs:label "Comercializadora GHI S.A.S."@es .
+
+ins:JuanPerez a ins:PersonaNatural ;
+    ins:nombreRazonSocial "Juan Perez"^^xsd:string ;
+    ins:iniciaEn ins:ReorgEjemplo2 ;
+    rdfs:label "Juan Perez"@es .
+
+ins:MariaLopez a ins:PersonaNatural ;
+    ins:nombreRazonSocial "Maria Lopez"^^xsd:string ;
+    rdfs:label "Maria Lopez"@es .
+
+ins:CarlosRuiz a ins:PersonaNatural ;
+    ins:nombreRazonSocial "Carlos Ruiz"^^xsd:string ;
+    rdfs:label "Carlos Ruiz"@es .
+
+ins:AnaMartinez a ins:PersonaNatural ;
+    ins:nombreRazonSocial "Ana Martinez"^^xsd:string ;
+    rdfs:label "Ana Martinez"@es .
+
+# ============================================================================
+# Acreedor (4 individuos)
+# ============================================================================
+ins:BancoColombia a ins:AcreedorPrivilegiado ;
+    ins:nombreRazonSocial "Bancolombia S.A."^^xsd:string ;
+    ins:participaEn ins:JuntaAcreedores_ReorgEjemplo1 ;
+    rdfs:label "Bancolombia S.A."@es .
+
+ins:BancoPopular a ins:AcreedorPrivilegiado ;
+    ins:nombreRazonSocial "Banco Popular S.A."^^xsd:string ;
+    ins:participaEn ins:JuntaAcreedores_LiquidEjemplo1 ;
+    rdfs:label "Banco Popular S.A."@es .
+
+ins:ProveedorAlfa a ins:AcreedorOrdinario ;
+    ins:nombreRazonSocial "Proveedor Alfa S.A.S."^^xsd:string ;
+    ins:participaEn ins:JuntaAcreedores_ReorgEjemplo1 ;
+    rdfs:label "Proveedor Alfa S.A.S."@es .
+
+ins:ProveedorBeta a ins:AcreedorOrdinario ;
+    ins:nombreRazonSocial "Proveedor Beta Ltda."^^xsd:string ;
+    ins:participaEn ins:JuntaAcreedores_LiquidEjemplo1 ;
+    rdfs:label "Proveedor Beta Ltda."@es .
+
+# Relaciones tieneAcreedor
+ins:EmpresaABC ins:tieneAcreedor ins:BancoColombia .
+ins:EmpresaABC ins:tieneAcreedor ins:ProveedorAlfa .
+ins:EmpresaABC ins:tieneAcreedorPrivilegiado ins:BancoColombia .
+ins:EmpresaXYZ ins:tieneAcreedor ins:BancoPopular .
+ins:EmpresaXYZ ins:tieneAcreedor ins:ProveedorBeta .
+ins:EmpresaXYZ ins:tieneAcreedorPrivilegiado ins:BancoPopular .
+
+# ============================================================================
+# Liquidador (4 individuos)
+# ============================================================================
+ins:LiquidadorPerez a ins:Liquidador ;
+    ins:nombreRazonSocial "Pedro Perez Liquidador"^^xsd:string ;
+    rdfs:label "Liquidador Pedro Perez"@es .
+
+ins:LiquidadorGomez a ins:Liquidador ;
+    ins:nombreRazonSocial "Laura Gomez Liquidadora"^^xsd:string ;
+    rdfs:label "Liquidadora Laura Gomez"@es .
+
+ins:LiquidadorRamirez a ins:Liquidador ;
+    ins:nombreRazonSocial "Andres Ramirez Liquidador"^^xsd:string ;
+    rdfs:label "Liquidador Andres Ramirez"@es .
+
+ins:LiquidadorCastro a ins:Liquidador ;
+    ins:nombreRazonSocial "Diana Castro Liquidadora"^^xsd:string ;
+    rdfs:label "Liquidadora Diana Castro"@es .
+
+# Relaciones designaLiquidador
+ins:SuperintendenciaSociedades ins:designaLiquidador ins:LiquidadorPerez .
+ins:SuperintendenciaSociedades ins:designaLiquidador ins:LiquidadorGomez .
+
+# ============================================================================
+# ActoJuridico (4 individuos)
+# ============================================================================
+ins:AutoAdmision_ReorgEjemplo1 a ins:AutoAdmision ;
+    rdfs:label "Auto de Admision - Reorganizacion Ejemplo 1"@es .
+
+ins:AutoAdmision_LiquidEjemplo1 a ins:AutoAdmision ;
+    rdfs:label "Auto de Admision - Liquidacion Ejemplo 1"@es .
+
+ins:Acuerdo_ReorgEjemplo1 a ins:AcuerdoReorganizacion ;
+    rdfs:label "Acuerdo de Reorganizacion Ejemplo 1"@es .
+
+ins:Acuerdo_ReorgEjemplo2 a ins:AcuerdoReorganizacion ;
+    rdfs:label "Acuerdo de Reorganizacion Ejemplo 2"@es .
+
+# Relaciones emite
+ins:SuperintendenciaSociedades ins:emite ins:AutoAdmision_ReorgEjemplo1 .
+ins:SuperintendenciaSociedades ins:emite ins:AutoAdmision_LiquidEjemplo1 .
+
+# ============================================================================
+# Obligacion (4 individuos)
+# ============================================================================
+ins:Obligacion_ABC_Banco a ins:Obligacion ;
+    ins:montoObligacion "500000000"^^xsd:decimal ;
+    ins:tieneGarantia ins:Garantia_Hipoteca_ABC ;
+    rdfs:label "Obligacion Empresa ABC con Bancolombia"@es .
+
+ins:Obligacion_ABC_Proveedor a ins:Obligacion ;
+    ins:montoObligacion "150000000"^^xsd:decimal ;
+    rdfs:label "Obligacion Empresa ABC con Proveedor Alfa"@es .
+
+ins:Obligacion_XYZ_Banco a ins:Obligacion ;
+    ins:montoObligacion "800000000"^^xsd:decimal ;
+    ins:tieneGarantia ins:Garantia_Prenda_XYZ ;
+    rdfs:label "Obligacion Empresa XYZ con Banco Popular"@es .
+
+ins:Obligacion_XYZ_Proveedor a ins:Obligacion ;
+    ins:montoObligacion "200000000"^^xsd:decimal ;
+    rdfs:label "Obligacion Empresa XYZ con Proveedor Beta"@es .
+
+# ============================================================================
+# Garantia (4 individuos)
+# ============================================================================
+ins:Garantia_Hipoteca_ABC a ins:Garantia ;
+    rdfs:label "Hipoteca sobre inmueble Empresa ABC"@es .
+
+ins:Garantia_Prenda_XYZ a ins:Garantia ;
+    rdfs:label "Prenda sobre maquinaria Empresa XYZ"@es .
+
+ins:Garantia_Fianza_JuanPerez a ins:Garantia ;
+    rdfs:label "Fianza personal Juan Perez"@es .
+
+ins:Garantia_Pagare_MariaLopez a ins:Garantia ;
+    rdfs:label "Pagare firmado por Maria Lopez"@es .

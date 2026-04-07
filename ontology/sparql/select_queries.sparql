@@ -1,0 +1,49 @@
+# =============================================================================
+# SELECT con ORDER BY y LIMIT
+# =============================================================================
+
+# Query 1: Todos los procedimientos de insolvencia supervisados por la
+#           Superintendencia de Sociedades, ordenados por fecha
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?proc ?tipo ?fecha ?label
+WHERE {
+    ?proc a ?tipo .
+    ?tipo rdfs:subClassOf ins:ProcedimientoInsolvencia .
+    ?proc ins:esSupervisadoPor ins:SuperintendenciaSociedades .
+    OPTIONAL { ?proc ins:fechaAdmision ?fecha }
+    OPTIONAL { ?proc rdfs:label ?label }
+}
+ORDER BY DESC(?fecha)
+LIMIT 10
+
+# ---
+
+# Query 2: Deudores con sus acreedores y tipo de acreedor
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?deudor ?nombreDeudor ?acreedor ?nombreAcreedor ?tipoAcreedor
+WHERE {
+    ?deudor ins:tieneAcreedor ?acreedor .
+    ?acreedor a ?tipoAcreedor .
+    OPTIONAL { ?deudor ins:nombreRazonSocial ?nombreDeudor }
+    OPTIONAL { ?acreedor ins:nombreRazonSocial ?nombreAcreedor }
+}
+ORDER BY ?nombreDeudor
+LIMIT 20
+
+# ---
+
+# Query 3: Normas legales ordenadas cronologicamente
+PREFIX ins: <http://www.unal.edu.co/ontologies/insolvencia#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?norma ?tipo ?numero ?anio ?label
+WHERE {
+    ?norma a ?tipo .
+    ?tipo rdfs:subClassOf ins:NormaLegal .
+    ?norma ins:numeroNorma ?numero .
+    OPTIONAL { ?norma ins:anoExpedicion ?anio }
+    OPTIONAL { ?norma rdfs:label ?label }
+}
+ORDER BY ?anio
+LIMIT 20

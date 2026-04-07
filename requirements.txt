@@ -1,0 +1,36 @@
+# Core LLM / agent
+langchain>=0.3
+langchain-community>=0.3
+langchain-openai>=0.2
+langchain-chroma>=0.1
+langchain-experimental>=0.3
+langgraph>=0.2
+langsmith>=0.1
+
+# Vector store & embeddings
+chromadb>=0.5
+sentence-transformers>=3.0
+
+# PDF ingestion
+pymupdf>=1.24
+pypdf>=4.0
+
+# Knowledge graph
+rdflib>=7.0
+SPARQLWrapper>=2.0
+
+# Web fallback
+duckduckgo-search>=6.0
+requests>=2.31
+beautifulsoup4>=4.12
+
+# Evaluation
+ragas>=0.1.18
+numpy>=1.26
+pandas>=2.2
+scikit-learn>=1.5
+
+# Tracing & utilities
+python-dotenv>=1.0
+tqdm>=4.66
+loguru>=0.7
